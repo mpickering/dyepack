@@ -17,21 +17,21 @@ jobs:
         - cachix push mpickering --watch-store&
         - nix-build -A dyepack
 
-    - stage: build documentation
-      if: false
-      script:
-        - nix-env -iA cachix -f https://cachix.org/api/v1/install
-        - cachix use mpickering
-        - cachix push mpickering --watch-store&
-        - nix-build -A site -o site
-
-      deploy:
-        provider: pages
-        skip_cleanup: true
-        github_token: $GITHUB_TOKEN
-        keep_history: true
-        target_branch: gh-pages
-        local_dir: site
-        on:
-          tags: true
+#    - stage: build documentation
+#      if: false
+#      script:
+#        - nix-env -iA cachix -f https://cachix.org/api/v1/install
+#        - cachix use mpickering
+#        - cachix push mpickering --watch-store&
+#        - nix-build -A site -o site
+#
+#      deploy:
+#        provider: pages
+#        skip_cleanup: true
+#        github_token: $GITHUB_TOKEN
+#        keep_history: true
+#        target_branch: gh-pages
+#        local_dir: site
+#        on:
+#          tags: true
 

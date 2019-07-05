@@ -1,0 +1,10 @@
+.cabal-sandbox
+cabal.sandbox.config
+cabal.project.local
+dist
+dist-newstyle
+test
+result
+tags
+*.hi
+*.o

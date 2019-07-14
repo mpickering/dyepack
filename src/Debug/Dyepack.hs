@@ -1,6 +1,6 @@
 {-# LANGUAGE RankNTypes, ExistentialQuantification #-}
 {-# LANGUAGE TypeApplications, FlexibleContexts #-}
-{-# LANGUAGE MagicHash #-}
+{-# LANGUAGE BangPatterns, MagicHash #-}
 module Debug.Dyepack (mkDyed, checkDyed, Dyed) where
 
 import qualified GHC.Generics as GHC
@@ -17,12 +17,12 @@ data Part = forall a. Part (Weak a)
 newtype Dyed a = Dyed [Part]
 
 mkDyed :: (GHC.Generic a, GFrom a, All (All Top) (GCode a)) => a -> IO (Dyed a)
-mkDyed x = do
+mkDyed !x = do
   let parts :: [IO Part]
       parts = hcfoldMap (Proxy @Top) go (gfrom x)
   Dyed <$> sequence parts
   where go :: I a1 -> [IO Part]
-        go (I y) = [Part <$> mkWeakPtr y Nothing]
+        go (I !y) = [Part <$> mkWeakPtr y Nothing]
 
 checkDyed :: Dyed a -> IO ()
 checkDyed (Dyed parts) = do
@@ -32,6 +32,6 @@ checkDyed (Dyed parts) = do
     checkPart (Part wp) = do
       res <- deRefWeak wp
       case res of
-        Just x -> putStrLn "leak" >> findPtr (unsafeCoerce# x) 1
-        Nothing -> putStrLn "released"
+        Just x -> findPtr (unsafeCoerce# x) 1
+        Nothing -> pure ()
 

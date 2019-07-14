@@ -1,0 +1,4 @@
+packages: .
+debug-info: 3
+executable-stripping: False
+library-stripping: False

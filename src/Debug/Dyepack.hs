@@ -12,19 +12,17 @@ import System.Mem
 
 foreign import ccall unsafe "findPtr" findPtr :: Ptr a -> Int -> IO ()
 
--- TODO: come up with better names
--- get rid of Something
-data Something = forall a. Something a
+-- TODO: come up with a better name for Part
 data Part = forall a. Part (Weak a)
 newtype Dyed a = Dyed [Part]
 
 mkDyed :: (GHC.Generic a, GFrom a, All (All Top) (GCode a)) => a -> IO (Dyed a)
 mkDyed x = do
-  let parts :: [Something]
+  let parts :: [IO Part]
       parts = hcfoldMap (Proxy @Top) go (gfrom x)
-  Dyed . map Part <$> mapM (`mkWeakPtr` (Just (putStrLn "gc"))) parts
-  where go :: I a1 -> [Something]
-        go (I y) = [Something y]
+  Dyed <$> sequence parts
+  where go :: I a1 -> [IO Part]
+        go (I y) = [Part <$> mkWeakPtr y Nothing]
 
 checkDyed :: Dyed a -> IO ()
 checkDyed (Dyed parts) = do

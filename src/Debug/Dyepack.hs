@@ -10,8 +10,6 @@ import GHC.Exts
 import System.Mem.Weak
 import System.Mem
 
-foreign import ccall unsafe "findPtr" findPtr :: Ptr a -> Int -> IO ()
-
 -- TODO: come up with a better name for Part
 data Part = forall a. Part (Weak a)
 
@@ -29,16 +27,16 @@ dye !x = do
   where go :: b -> IO Part
         go !y = Part <$> mkWeakPtr y Nothing
 
--- | Check if a 'Dyed' is being retained. 
+-- | Check if a 'Dyed' is being retained.
 -- Will print to `stderr` if it is being retained.
-checkDyed :: Dyed a -> IO ()
-checkDyed (Dyed parts) = do
+checkDyed :: Dyed a -> (forall x . x -> IO ()) -> IO ()
+checkDyed (Dyed parts) k = do
   performGC
   mapM_ checkPart parts
-  where 
+  where
     checkPart (Part wp) = do
       res <- deRefWeak wp
       case res of
-        Just x -> findPtr (unsafeCoerce# x) 1
+        Just x -> k x
         Nothing -> pure ()
 

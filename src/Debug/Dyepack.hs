@@ -1,7 +1,7 @@
 {-# LANGUAGE RankNTypes, ExistentialQuantification #-}
 {-# LANGUAGE TypeApplications, FlexibleContexts #-}
 {-# LANGUAGE BangPatterns, MagicHash #-}
-module Debug.Dyepack (dye, checkDyed, Dyed) where
+module Debug.Dyepack (dye, checkDyed, Dyed(..)) where
 
 import qualified GHC.Generics as GHC
 import Generics.SOP

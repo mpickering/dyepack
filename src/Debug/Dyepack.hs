@@ -33,11 +33,9 @@ dye !x = do
       info = gdatatypeInfo (Proxy @a)
   Dyed <$> sequence parts
   where go :: ConstructorInfo xs -> NP I xs -> K [IO Part] xs
-        go i = case  i of
-                 Constructor n -> \x -> K (hcollapse $ hcmap (Proxy @Top) (doOne n) x)
-                 Infix n _ prec -> \x -> K (hcollapse $ hcmap (Proxy @Top) (doOne n) x)
-                 Record n fi -> \x -> K (goProd fi x)
-
+        go (Constructor n) x = K (hcollapse $ hcmap (Proxy @Top) (doOne n) x)
+        go (Infix n _ prec) x = K (hcollapse $ hcmap (Proxy @Top) (doOne n) x)
+        go (Record n fi) x = K (goProd fi x)
 
         doOne d !(I !y) = K (Part d <$> mkWeakPtr y Nothing)
 

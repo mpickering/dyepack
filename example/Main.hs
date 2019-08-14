@@ -15,6 +15,9 @@ main = do
       u = User a 5
 
   dyed <- dye u
-  checkDyed dyed
+  -- This function will break the debugger if `a` is retained at this
+  -- point
+  checkDyed dyed (\s x -> print ("LEAKED: PAUSING:" ++ s))
+  -- y retains a reference to a, so it can't be gced
   print y
 

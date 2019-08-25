@@ -25,7 +25,14 @@ library
   hs-source-dirs:      src
   default-language:    Haskell2010
 
+Flag examples
+  description: Build example
+  manual: True
+  default: False
+
 executable example
+  if !flag(examples)
+    buildable: False
   main-is:             Main.hs
   build-depends:       base ^>=4.12.0.0
                      , dyepack

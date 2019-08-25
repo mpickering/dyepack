@@ -19,8 +19,10 @@ data Part = forall a. Part String (Weak a)
 -- are being retained.
 newtype Dyed a = Dyed [Part]
 
-
--- | Create a new 'Dyed' that can be then used with 'checkDyed'
+-- | Create a new 'Dyed' that can be then used with 'checkDyed'. 'dye' will
+-- make a 'Weak' pointer to each field in your type which can be used to
+-- check if any part of the data type is leaking at a later part of the
+-- program.
 dye :: forall a . (GHC.Generic a
                   , GFrom a
                   , All (All Top) (GCode a)
@@ -43,8 +45,8 @@ dye !x = do
         goProd fi x = hcollapse $ hczipWith (Proxy @Top) (\(FieldInfo l) y -> doOne l y) fi x
 
 
--- | Check if a 'Dyed' is being retained.
--- Will print to `stderr` if it is being retained.
+-- | Check if any part of 'Dyed' is being retained. The callback is triggered when
+-- the object is retained.
 checkDyed :: Dyed a -> (forall x . String -> x -> IO ()) -> IO ()
 checkDyed (Dyed parts) k = do
   performGC
@@ -55,4 +57,3 @@ checkDyed (Dyed parts) k = do
       case res of
         Just x -> k s x
         Nothing -> pure ()
-

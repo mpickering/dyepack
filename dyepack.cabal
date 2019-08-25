@@ -4,8 +4,9 @@ cabal-version:       2.4
 
 name:                dyepack
 version:             0.1.0.0
--- synopsis:
--- description:
+synopsis:            Programatically identify space leaks in your program.
+description:         Identifier space leaks in your program using Simon Marlow's
+                     weak pointer technique.
 -- bug-reports:
 license:             BSD-3-Clause
 license-file:        LICENSE

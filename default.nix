@@ -15,4 +15,4 @@ let
   };
 
 in
-  { dyepack = pkgSet.config.hsPkgs.dyepack ; }
+  pkgSet.config.hsPkgs.dyepack.components.all

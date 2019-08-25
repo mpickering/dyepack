@@ -10,7 +10,7 @@ description:         Identifier space leaks in your program using Simon Marlow's
 -- bug-reports:
 license:             BSD-3-Clause
 license-file:        LICENSE
-author:              Matthew Pickering
+author:              Matthew Pickering, Luke Lau
 maintainer:          matthewtpickering@gmail.com
 -- copyright:
 -- category:
@@ -38,4 +38,5 @@ executable example
                      , dyepack
   default-language:    Haskell2010
   hs-source-dirs:      example
-  ghc-options:         -fwhole-archive-hs-libs -debug -threaded -O0 -g3
+  if flag(examples)
+    ghc-options: -fwhole-archive-hs-libs -debug -threaded -O0 -g3
